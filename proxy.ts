@@ -1,14 +1,23 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-import { getUserRole } from "@/lib/auth";
+import { getUserRoleFromAuth } from "@/lib/auth";
 
 const isUserRoute = createRouteMatcher(["/user(.*)"]);
 const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
+const isProductsRoute = createRouteMatcher(["/products(.*)"]);
 
-export default clerkMiddleware(async (_auth, req) => {
+export default clerkMiddleware(async (auth, req) => {
+  if (isProductsRoute(req)) {
+    const role = await getUserRoleFromAuth(auth);
+
+    if (!role) {
+      return NextResponse.redirect(new URL("/sign-in/user", req.url));
+    }
+  }
+
   if (isUserRoute(req)) {
-    const role = await getUserRole();
+    const role = await getUserRoleFromAuth(auth);
 
     if (!role) {
       return NextResponse.redirect(new URL("/sign-in/user", req.url));
@@ -20,7 +29,7 @@ export default clerkMiddleware(async (_auth, req) => {
   }
 
   if (isAdminRoute(req)) {
-    const role = await getUserRole();
+    const role = await getUserRoleFromAuth(auth);
 
     if (!role) {
       return NextResponse.redirect(new URL("/sign-in/admin", req.url));
@@ -36,6 +45,6 @@ export const config = {
   matcher: [
     "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
     "/(api|trpc)(.*)",
-    "/__clerk/:path*",
+    "/__clerk/(.*)",
   ],
 };

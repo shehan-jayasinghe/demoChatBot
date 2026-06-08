@@ -7,8 +7,8 @@ export default function UserSignInPage() {
         routing="path"
         path="/sign-in/user"
         signUpUrl="/sign-up/user"
-        forceRedirectUrl="/user"
-        fallbackRedirectUrl="/user"
+        forceRedirectUrl="/products"
+        fallbackRedirectUrl="/products"
       />
     </div>
   );

@@ -11,6 +11,14 @@ export default function Home() {
         </div>
 
         <div className="flex w-full flex-col gap-3">
+          <Show when="signed-in">
+            <Link
+              href="/products"
+              className="flex h-11 items-center justify-center rounded-lg bg-blue-600 text-sm font-medium text-white hover:bg-blue-500"
+            >
+              Browse Products
+            </Link>
+          </Show>
           <Link
             href="/sign-in/user"
             className="flex h-11 items-center justify-center rounded-lg bg-zinc-900 text-sm font-medium text-white hover:bg-zinc-800"
